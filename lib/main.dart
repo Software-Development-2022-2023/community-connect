@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const App());
-}
+import 'package:community_connect/screens/surfing.dart';
+import 'package:community_connect/screens/picture_mode.dart';
+
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -81,9 +82,9 @@ class _ModeNavigationState extends State<ModeNavigation> {
           ),
           body: const TabBarView( // Tabs.
             children: [
-            Center(child: Text("sdfkldfskjl")),
-            Center(child: Text("dfskjlkjldf")),
-            Center(child: Text("sdijflkldfs")),
+            MarketTab(),
+            LeadershipTab(),
+            TrendingTab(),
             ],
           ),
           bottomNavigationBar: bottomNavigationBar,
@@ -97,9 +98,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         title: const Text("Community Connect"),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text("kjdfskdfs"),
-      ),
+      body: const PictureModeScreen(),
       bottomNavigationBar: bottomNavigationBar,
     );
   }
