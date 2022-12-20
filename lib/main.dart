@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:community_connect/screens/surfing.dart';
-import 'package:community_connect/screens/picture_mode.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -18,7 +15,6 @@ void main() async {
 class App extends StatelessWidget {
   const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,32 +36,46 @@ class ModeNavigation extends StatefulWidget {
 }
 
 class _ModeNavigationState extends State<ModeNavigation> {
-  int _selectedIndex = 0;
+  bool _pictureMode = false;
+  int _selectedDrawerIndex = -1;
 
-  void _onModeTapped(int index) {
+  void _onModeTapped() {
     setState(() {
-      _selectedIndex = index;
+      _pictureMode = !_pictureMode;
+    });
+  }
+
+  void _selectDrawerIndex(int index) {
+    setState(() {
+      _selectedDrawerIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    BottomNavigationBar bottomNavigationBar = BottomNavigationBar(
-      onTap: _onModeTapped,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.photo_camera),
-          label: "Picture",
+    switch (_selectedDrawerIndex) { // TODO: All of this.
+      case 0: // Profile.
+        break;
+      case 1: // Leaderboard.
+        break;
+      case 2: // My Posts.
+        break;
+      case 3: // Market.
+        break;
+    }
+
+    Container switchModeButton = Container(
+      height: 200,
+      width: 80,
+      child: FittedBox(
+        child: FloatingActionButton(
+          onPressed: _onModeTapped,
+          child: const Icon(Icons.swap_horiz),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.web),
-          label: "Surfing",
-        ),
-      ],
-      currentIndex: _selectedIndex,
+      ),
     );
 
-    if (_selectedIndex == 1) {
+    if (!_pictureMode) {
       // Surfing Mode.
       return DefaultTabController(
         length: 3,
@@ -73,31 +83,62 @@ class _ModeNavigationState extends State<ModeNavigation> {
           appBar: AppBar(
             title: const Text("Community Connect"),
             centerTitle: true,
-            bottom: const TabBar(
-             tabs: [
-              Tab(
-                  text: 'Market',
-                  icon: Icon(Icons.local_grocery_store) // TODO: Or maybe Icons.store if that looks better.
+          ),
+          floatingActionButton: switchModeButton,
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text("Filters:", style: Theme.of(context).textTheme.headline6),
+              const PostFilter(), // TODO: Maybe make the filters into a side sheet instead.
+            ],
+          ),
+        ),
+        endDrawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Probably design this to look nicer. I feel like something should be added here.",
+                ),
               ),
-              Tab(
-                  text: 'Leadership',
-                  icon: Icon(Icons.leaderboard)
+              const Divider(
+                height: 1,
+                thickness: 1,
               ),
-              Tab(
-                  text: 'Trending',
-                  icon: Icon(Icons.trending_up)
+              ListTile(
+                leading: const Icon(Icons.question_mark),
+                title: Text("Profile", style: Theme.of(context).textTheme.titleMedium,),
+                selected: _selectedDrawerIndex == 0,
+                onTap: () => _selectDrawerIndex(0),
+              ),
+              ListTile(
+                leading: const Icon(Icons.leaderboard),
+                title: Text("Leaderboard", style: Theme.of(context).textTheme.titleMedium,),
+                selected: _selectedDrawerIndex == 0,
+                onTap: () => _selectDrawerIndex(0),
+              ),
+              ListTile(
+                leading: const Icon(Icons.question_mark),
+                title: Text("My Posts", style: Theme.of(context).textTheme.titleMedium,),
+                selected: _selectedDrawerIndex == 0,
+                onTap: () => _selectDrawerIndex(0),
+              ),
+              ListTile(
+                leading: const Icon(Icons.question_mark),
+                title: Text("Market", style: Theme.of(context).textTheme.titleMedium,),
+                selected: _selectedDrawerIndex == 0,
+                onTap: () => _selectDrawerIndex(0),
+              ),
+              const Divider(
+                height: 1,
+                thickness: 1,
               ),
             ],
           ),
-          ),
-          body: const TabBarView( // Tabs.
-            children: [
-            MarketTab(),
-            LeadershipTab(),
-            TrendingTab(),
-            ],
-          ),
-          bottomNavigationBar: bottomNavigationBar,
+        ),
         ),
       );
     }
@@ -109,7 +150,48 @@ class _ModeNavigationState extends State<ModeNavigation> {
         centerTitle: true,
       ),
       body: const PictureModeScreen(),
-      bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: switchModeButton,
     );
   }
 }
+
+class PostFilter extends StatelessWidget {
+  const PostFilter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 15,
+      children: [
+        FilterChip( // TODO: Probably make this into a class. I don't know all the filters, so I won't do this yet.
+          label: const Text("Filter name."),
+          selected: true,
+          onSelected: (bool value) {},
+        ),
+        FilterChip(
+          label: const Text("fskl."),
+          onSelected: (bool value) {},
+        ),
+        FilterChip(
+          label: const Text("Longer filter name."),
+          onSelected: (bool value) {},
+        ),
+      ],
+    );
+  }
+}
+
+class PictureModeScreen extends StatefulWidget {
+  const PictureModeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PictureModeScreen> createState() => _PictureModeScreenState();
+}
+
+class _PictureModeScreenState extends State<PictureModeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
