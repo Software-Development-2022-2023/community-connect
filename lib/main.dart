@@ -3,7 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:community_connect/screens/surfing.dart';
 import 'package:community_connect/screens/picture_mode.dart';
 
-void main() => runApp(const App());
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const App());
+}
 
 class App extends StatelessWidget {
   const App({super.key});
