@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.community_connect">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
    <application
         android:label="community_connect"
         android:name="${applicationName}"

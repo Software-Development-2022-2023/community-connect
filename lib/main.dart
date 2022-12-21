@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -53,7 +56,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    switch (_selectedDrawerIndex) { // TODO: All of this.
+    switch (_selectedDrawerIndex) { // TODO: All of this. Probably create a new file for organization.
       case 0: // Profile.
         break;
       case 1: // Leaderboard.
@@ -89,7 +92,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               Text("Filters:", style: Theme.of(context).textTheme.headline6),
               const PostFilter(), // TODO: Maybe make the filters into a side sheet instead.
             ],
@@ -97,7 +100,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         ),
         endDrawer: Drawer(
           child: ListView(
-            children: <Widget>[
+            children: [
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
@@ -149,7 +152,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         title: const Text("Community Connect"),
         centerTitle: true,
       ),
-      body: const PictureModeScreen(),
+      body: PictureModeScreen(returnSurfing: _onModeTapped,),
       floatingActionButton: switchModeButton,
     );
   }
@@ -182,16 +185,58 @@ class PostFilter extends StatelessWidget {
 }
 
 class PictureModeScreen extends StatefulWidget {
-  const PictureModeScreen({Key? key}) : super(key: key);
+  PictureModeScreen({Key? key, required this.returnSurfing}) : super(key: key);
+
+  Function returnSurfing;
 
   @override
   State<PictureModeScreen> createState() => _PictureModeScreenState();
 }
 
 class _PictureModeScreenState extends State<PictureModeScreen> {
+
+  File? imageFile;
+
+  void _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    } else {
+      widget.returnSurfing();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    if (imageFile == null) {
+      _getFromCamera();
+    }
+    return ListView(
+      children: [
+        const SizedBox(height: 50,),
+        imageFile != null ?
+          Image.file(imageFile!) :
+          const Icon(Icons.camera_enhance_rounded),
+        Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: ElevatedButton(
+            child: const Text(
+              "Post.", // TODO: Probably make this look nicer.
+              style: TextStyle(fontSize: 20),
+            ),
+            onPressed: () {
+              print(imageFile); // TODO: Post image.
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
 
