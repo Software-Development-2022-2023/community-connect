@@ -101,10 +101,21 @@ class _ModeNavigationState extends State<ModeNavigation> {
         endDrawer: Drawer(
           child: ListView(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "Probably design this to look nicer. I feel like something should be added here.",
+              Container(
+                color: Theme.of(context).primaryColor,
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: const [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: null, // TODO: Add badge profile picture.
+                    ),
+                    SizedBox(height: 14,),
+                    Text(
+                      "ExampleUsername", // TODO: Change to actual username.
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ],
                 ),
               ),
               const Divider(
@@ -112,7 +123,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 thickness: 1,
               ),
               ListTile(
-                leading: const Icon(Icons.question_mark),
+                leading: const Icon(Icons.account_circle),
                 title: Text("Profile", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
                 onTap: () => _selectDrawerIndex(0),
@@ -124,13 +135,13 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 onTap: () => _selectDrawerIndex(0),
               ),
               ListTile(
-                leading: const Icon(Icons.question_mark),
+                leading: const Icon(Icons.smartphone),
                 title: Text("My Posts", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
                 onTap: () => _selectDrawerIndex(0),
               ),
               ListTile(
-                leading: const Icon(Icons.question_mark),
+                leading: const Icon(Icons.store),
                 title: Text("Market", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
                 onTap: () => _selectDrawerIndex(0),
