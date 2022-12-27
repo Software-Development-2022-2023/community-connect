@@ -4,6 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:community_connect/screens/leaderboard.dart';
+import 'package:community_connect/screens/market.dart';
+import 'package:community_connect/screens/profile.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -58,12 +62,16 @@ class _ModeNavigationState extends State<ModeNavigation> {
   Widget build(BuildContext context) {
     switch (_selectedDrawerIndex) { // TODO: All of this. Probably create a new file for organization.
       case 0: // Profile.
+        // return const ProfileScreen();
         break;
       case 1: // Leaderboard.
+        // return const LeaderboardScreen();
         break;
       case 2: // My Posts.
+        // Probably just the normal posts screen but with only the user's posts.
         break;
       case 3: // Market.
+        // return const MarketScreen();
         break;
     }
 
