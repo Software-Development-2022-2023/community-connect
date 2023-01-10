@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import 'package:community_connect/post.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -92,9 +96,15 @@ class _ModeNavigationState extends State<ModeNavigation> {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Filters:", style: Theme.of(context).textTheme.headline6),
-              const PostFilter(), // TODO: Maybe make the filters into a side sheet instead.
+            children: const [
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Search for a term"
+                )
+              ),
+              PostFilter(), // TODO: Maybe make the filters into a side sheet instead.
+              PostDisplay(),
             ],
           ),
         ),
@@ -174,23 +184,47 @@ class PostFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 15,
-      children: [
-        FilterChip( // TODO: Probably make this into a class. I don't know all the filters, so I won't do this yet.
-          label: const Text("Filter name."),
-          selected: true,
-          onSelected: (bool value) {},
-        ),
-        FilterChip(
-          label: const Text("fskl."),
-          onSelected: (bool value) {},
-        ),
-        FilterChip(
-          label: const Text("Longer filter name."),
-          onSelected: (bool value) {},
-        ),
-      ],
+    return TextButton(
+      onPressed: () {
+        return; // TODO: Open filters sidebar
+      },
+      child: const Text("Add filters"),
+    );
+  }
+}
+
+class PostDisplay extends StatelessWidget {
+  const PostDisplay({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Post> posts = [
+      Post(
+        badge: "",
+        username: "sejafh",
+        time: 234234,
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        likeInfo: LikeInfo(500, true),
+        filters: [FilterInfo("recycling"), FilterInfo("solar power"), FilterInfo("Renewables"), FilterInfo("Planting trees")],
+      ),
+      Post(
+        badge: "",
+        username: "sejafh",
+        time: 234234,
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        likeInfo: LikeInfo(500, true),
+        filters: [FilterInfo("recycling"), FilterInfo("solar power"), FilterInfo("Renewables"), FilterInfo("Planting trees")],
+      ),
+    ];
+
+    return Expanded(
+      child: ListView.separated(
+        itemCount: posts.length,
+        separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.0, height: 30.0),
+        itemBuilder: (context, index) {
+          return posts[index];
+        }
+      )
     );
   }
 }
