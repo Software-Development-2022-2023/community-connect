@@ -8,6 +8,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:community_connect/screens/leaderboard.dart';
+import 'package:community_connect/screens/marketplace.dart';
+import 'package:community_connect/screens/profile.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -53,6 +57,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
   }
 
   void _selectDrawerIndex(int index) {
+    Navigator.pop(context);
     setState(() {
       _selectedDrawerIndex = index;
     });
@@ -60,14 +65,19 @@ class _ModeNavigationState extends State<ModeNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? screen;
     switch (_selectedDrawerIndex) { // TODO: All of this. Probably create a new file for organization.
       case 0: // Profile.
+        // screen = const ProfileScreen();
         break;
       case 1: // Leaderboard.
+        // screen = const LeaderboardScreen();
         break;
       case 2: // My Posts.
+        // Probably just the normal posts screen but with only the user's posts.
         break;
-      case 3: // Market.
+      case 3: // Marketplace.
+        // screen = const MarketplaceScreen();
         break;
     }
 
@@ -92,7 +102,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
             centerTitle: true,
           ),
           floatingActionButton: switchModeButton,
-        body: Padding(
+        body: (screen != null) ? screen : Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,19 +152,19 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 leading: const Icon(Icons.leaderboard),
                 title: Text("Leaderboard", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(1),
               ),
               ListTile(
                 leading: const Icon(Icons.smartphone),
                 title: Text("My Posts", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(2),
               ),
               ListTile(
                 leading: const Icon(Icons.store),
-                title: Text("Market", style: Theme.of(context).textTheme.titleMedium,),
+                title: Text("Marketplace", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(3),
               ),
               const Divider(
                 height: 1,
