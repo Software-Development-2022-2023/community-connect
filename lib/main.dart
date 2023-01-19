@@ -5,7 +5,7 @@ import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:community_connect/screens/leaderboard.dart';
-import 'package:community_connect/screens/market.dart';
+import 'package:community_connect/screens/marketplace.dart';
 import 'package:community_connect/screens/profile.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -70,8 +70,8 @@ class _ModeNavigationState extends State<ModeNavigation> {
       case 2: // My Posts.
         // Probably just the normal posts screen but with only the user's posts.
         break;
-      case 3: // Market.
-        // return const MarketScreen();
+      case 3: // Marketplace.
+        // return const MarketplaceScreen();
         break;
     }
 
@@ -140,19 +140,19 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 leading: const Icon(Icons.leaderboard),
                 title: Text("Leaderboard", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(1),
               ),
               ListTile(
                 leading: const Icon(Icons.smartphone),
                 title: Text("My Posts", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(2),
               ),
               ListTile(
                 leading: const Icon(Icons.store),
-                title: Text("Market", style: Theme.of(context).textTheme.titleMedium,),
+                title: Text("Marketplace", style: Theme.of(context).textTheme.titleMedium,),
                 selected: _selectedDrawerIndex == 0,
-                onTap: () => _selectDrawerIndex(0),
+                onTap: () => _selectDrawerIndex(3),
               ),
               const Divider(
                 height: 1,
