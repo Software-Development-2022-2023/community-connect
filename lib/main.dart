@@ -53,6 +53,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
   }
 
   void _selectDrawerIndex(int index) {
+    Navigator.pop(context);
     setState(() {
       _selectedDrawerIndex = index;
     });
@@ -60,18 +61,19 @@ class _ModeNavigationState extends State<ModeNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? screen;
     switch (_selectedDrawerIndex) { // TODO: All of this. Probably create a new file for organization.
       case 0: // Profile.
-        // return const ProfileScreen();
+        // screen = const ProfileScreen();
         break;
       case 1: // Leaderboard.
-        // return const LeaderboardScreen();
+        // screen = const LeaderboardScreen();
         break;
       case 2: // My Posts.
         // Probably just the normal posts screen but with only the user's posts.
         break;
       case 3: // Marketplace.
-        // return const MarketplaceScreen();
+        // screen = const MarketplaceScreen();
         break;
     }
 
@@ -96,7 +98,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
             centerTitle: true,
           ),
           floatingActionButton: switchModeButton,
-        body: Padding(
+        body: (screen != null) ? screen : Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
