@@ -98,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
           alignment: AlignmentDirectional.topStart,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Wrap(
+            child: Wrap( // TODO: Fill with actual badges.
               children: [BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""),],
             ),
           ),
