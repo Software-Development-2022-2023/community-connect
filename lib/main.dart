@@ -52,8 +52,10 @@ class _ModeNavigationState extends State<ModeNavigation> {
     });
   }
 
-  void _selectDrawerIndex(int index) {
-    Navigator.pop(context);
+  void _selectDrawerIndex(int index, {bool closeDrawer = true}) {
+    if (closeDrawer && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     setState(() {
       _selectedDrawerIndex = index;
     });
@@ -96,6 +98,11 @@ class _ModeNavigationState extends State<ModeNavigation> {
           appBar: AppBar(
             title: const Text("Community Connect"),
             centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                _selectDrawerIndex(-1, closeDrawer: false);
+              },
+              icon: const Icon(Icons.home))
           ),
           floatingActionButton: switchModeButton,
         body: (screen != null) ? screen : Padding(
