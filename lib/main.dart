@@ -15,6 +15,9 @@ import 'package:community_connect/screens/profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+const List<String> subjectList = <String>["Recycling", "Solar Power", "Planting trees", "Renewables", "Picking up trash"];
+const List<String> sortBy = <String>["Most recent", "Most liked", "Least liked"];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -93,31 +96,38 @@ class _ModeNavigationState extends State<ModeNavigation> {
     );
 
     if (!_pictureMode) {
+      final GlobalKey<ScaffoldState> _key = GlobalKey();
       // Surfing Mode.
       return DefaultTabController(
         length: 3,
         child: Scaffold(
+          key: _key,
           appBar: AppBar(
             title: const Text("Community Connect"),
             centerTitle: true,
+            automaticallyImplyLeading: false,
           ),
           floatingActionButton: switchModeButton,
         body: (screen != null) ? screen : Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              TextField(
+            children: [
+              const TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Search for a term"
                 )
               ),
-              PostFilter(), // TODO: Maybe make the filters into a side sheet instead.
+              TextButton(
+                child: Text("Add filters..."),
+                onPressed: () => _key.currentState!.openDrawer(),
+              ),
               PostDisplay(),
             ],
           ),
         ),
+        drawer: PostFilter(),
         endDrawer: Drawer(
           child: ListView(
             children: [
@@ -189,16 +199,86 @@ class _ModeNavigationState extends State<ModeNavigation> {
   }
 }
 
-class PostFilter extends StatelessWidget {
-  const PostFilter({Key? key}) : super(key: key);
+class PostFilter extends StatefulWidget {
+  const PostFilter({super.key});
+
+  @override
+  State<PostFilter> createState() => _PostFilterState();
+}
+
+class _PostFilterState extends State<PostFilter> {
+  String sortVal = sortBy.first;
+  List<String> subjectChoices = [];
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        return; // TODO: Open filters sidebar
-      },
-      child: const Text("Add filters"),
+    return Drawer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text("Sort by", style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 8.0),
+          Wrap(
+            direction: Axis.vertical,
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: List<Widget>.generate(sortBy.length, (int i) {
+              return ChoiceChip(
+                label: Text(sortBy[i], style: Theme.of(context).textTheme.bodyLarge),
+                selected: sortBy[i] == sortVal,
+                selectedColor: Theme.of(context).colorScheme.primary,
+                onSelected: (bool selected) {
+                  setState(() {
+                    sortVal = sortBy[i];
+                  });
+                },
+              );
+            }),
+          ),
+          const Divider(height: 10, thickness: 1),
+          Text("Subjects", style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 8.0),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 400.0),
+            child: SingleChildScrollView(
+              child: Wrap(
+                direction: Axis.vertical,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: List<Widget>.generate(subjectList.length, (int i) {
+                  return FilterChip(
+                    label: Text(subjectList[i]),
+                    selected: subjectChoices.contains(subjectList[i]),
+                    selectedColor: Theme.of(context).colorScheme.primary,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        if (selected && !subjectChoices.contains(subjectList[i])) {
+                          subjectChoices.add(subjectList[i]);
+                        } else if (!selected) {
+                          subjectChoices.remove(subjectList[i]);
+                        }
+                      });
+                    },
+                  );
+                }),
+              ),
+            ),
+          ),
+          const Divider(height: 10, thickness: 1),
+          TextButton(
+            child: Text("Search", style: Theme.of(context).textTheme.labelLarge),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+              padding: MaterialStateProperty.all(EdgeInsets.only(left: 30.0, right: 30.0)),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+
+              // TODO: Update Search Results
+            }
+          )
+        ],
+      ),
     );
   }
 }
@@ -267,6 +347,7 @@ class PostDisplay extends StatelessWidget {
 
     return Expanded(
       child: ListView.separated(
+        padding: EdgeInsets.all(5.0),
         itemCount: posts.length,
         separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.0, height: 30.0),
         itemBuilder: (context, index) {

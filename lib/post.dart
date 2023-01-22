@@ -146,7 +146,7 @@ class _PostState extends State<Post> {
                     child: Text(
                         widget.filters[index],
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         )
