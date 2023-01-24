@@ -71,7 +71,9 @@ class _ModeNavigationState extends State<ModeNavigation> {
     Widget? screen;
     switch (_selectedDrawerIndex) { // TODO: All of this. Probably create a new file for organization.
       case 0: // Profile.
-        // screen = const ProfileScreen();
+        screen = const ProfileScreen(
+          username: "TestUsername",
+        );
         break;
       case 1: // Leaderboard.
         // screen = const LeaderboardScreen();
