@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:community_connect/util.dart';
 
-
-NumberFormat nf = NumberFormat.decimalPattern("en_us");
 
 class BadgeIcon extends StatelessWidget {
   const BadgeIcon({Key? key, required this.id}) : super(key: key);
@@ -28,19 +26,6 @@ class ProfileScreen extends StatelessWidget {
   }) : super(key: key);
 
   final String username;
-
-  String formatNumber(int number) {
-    if (number >= 1e6) {
-      if (number < 1e9) {
-        return "${(number / 1e6 * 100).round()/100}M";
-      } else if (number < 1e12) {
-        return "${(number / 1e9 * 100).round()/100}B";
-      } else {
-        return "${(number / 1e12 * 100).round()/100}T";
-      }
-    }
-    return nf.format(number);
-  }
 
   @override
   Widget build(BuildContext context) {

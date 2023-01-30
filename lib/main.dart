@@ -59,7 +59,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
     });
   }
 
-  void _selectDrawerIndex(int index, {bool closeDrawer = true}) {
+  void _selectDrawerIndex(int index, [bool closeDrawer = true]) {
     if (closeDrawer && Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -78,7 +78,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         );
         break;
       case 1: // Leaderboard.
-        // screen = const LeaderboardScreen();
+        screen = const LeaderboardScreen();
         break;
       case 2: // My Posts.
         // Probably just the normal posts screen but with only the user's posts.
@@ -111,7 +111,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
-                _selectDrawerIndex(-1, closeDrawer: false);
+                _selectDrawerIndex(-1, false);
               },
               icon: const Icon(Icons.home))
           ),
