@@ -59,7 +59,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
     });
   }
 
-  void _selectDrawerIndex(int index, {bool closeDrawer = true}) {
+  void _selectDrawerIndex(int index, [bool closeDrawer = true]) {
     if (closeDrawer && Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -111,7 +111,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
-                _selectDrawerIndex(-1, closeDrawer: false);
+                _selectDrawerIndex(-1, false);
               },
               icon: const Icon(Icons.home))
           ),
