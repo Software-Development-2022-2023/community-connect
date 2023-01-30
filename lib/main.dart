@@ -1,19 +1,20 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-import 'package:community_connect/post.dart';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'package:community_connect/post.dart';
+import 'package:community_connect/badge.dart';
+
 import 'package:community_connect/screens/leaderboard.dart';
 import 'package:community_connect/screens/marketplace.dart';
 import 'package:community_connect/screens/profile.dart';
 
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 const List<String> subjectList = <String>["Recycling", "Solar Power", "Planting trees", "Renewables", "Picking up trash"];
 const List<String> sortBy = <String>["Most recent", "Most liked", "Least liked"];
@@ -143,10 +144,10 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 color: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: null, // TODO: Add badge profile picture.
+                      backgroundImage: getBadgeImage("bird"), // TODO: Add badge profile picture.
                     ),
                     SizedBox(height: 14,),
                     Text(
