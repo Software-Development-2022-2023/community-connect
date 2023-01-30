@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 
 Map<String, List<String>> badges = {
@@ -21,7 +22,7 @@ Map<String, List<String>> badges = {
   ],
   "buyable": [
     "bird",
-    "digital_landscape",
+    "landscape",
     "fairy",
     "flower",
     "ladybug",
@@ -29,31 +30,35 @@ Map<String, List<String>> badges = {
   ],
 };
 
-Map<String, String> badgeIds = {
-  "10 Favorites": "favorites1",
-  "100 Favorites": "favorites2",
-  "1000 Favorites": "favorites3",
-  "10000 Favorites": "favorites4",
-  "100000 Favorites": "favorites5",
-  "1 Follower": "followers1",
-  "10 Followers": "followers2",
-  "100 Followers": "followers3",
-  "1000 Followers": "followers4",
-  "10000 Followers": "followers5",
-  "1 Month User": "time1",
-  "6 Month User": "time2",
-  "1 Year User": "time3",
-  "5 Year User": "time4",
-  "10 Year User": "time5",
+Map<String, String> badgeNames = {
+  "favorites1": "10 Favorites",
+  "favorites2": "100 Favorites",
+  "favorites3": "1,000 Favorites",
+  "favorites4": "10,000 Favorites",
+  "favorites5": "100,000 Favorites",
+  "followers1": "1 Follower",
+  "followers2": "10 Followers",
+  "followers3": "100 Followers",
+  "followers4": "1000 Followers",
+  "followers5": "10,000 Followers",
+  "time1": "1 Month User",
+  "time2": "6 Month User",
+  "time3": "1 Year User",
+  "time4": "5 Year User",
+  "time5": "10 Year User",
 };
 
+
 String? getBadgeId(String category, dynamic value) {
-  if (value is int && value == 1) {
-    category = category.substring(0, category.length - 1);
+  if (category != "time") {
+    value = log(value) / log(10);
+    if (category == "followers") {
+      value++;
+    }
   } else { // TODO: If value is a time. Not sure what data type firebase will return.
-    category = " User"; // TODO: Add "Month" or "Year".
+
   }
-  return "$value ${category[0].toUpperCase()}${category.substring(1)}";
+  return "$category${value.round()}}";
 }
 
 ImageProvider getBadgeImage(String badgeId) {
