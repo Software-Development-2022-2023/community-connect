@@ -85,7 +85,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         // Probably just the normal posts screen but with only the user's posts.
         break;
       case 3: // Marketplace.
-        // screen = const MarketplaceScreen();
+        screen = const MarketplaceScreen();
         break;
     }
 
