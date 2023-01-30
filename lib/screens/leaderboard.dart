@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:community_connect/util.dart';
 
-// TODO: Create a class named LeaderboardScreen or something.
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -10,6 +10,31 @@ class LeaderboardScreen extends StatelessWidget {
     List<List<dynamic>> users = [
       ["", "TestUsername", 8932748743],
       ["", "skdfjlkdsjfldsjfjfldskjfdslk", 839749328],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
       ["", "dfkjlfs", 8397328],
       ["", "dfsldfsdfsdskj", 9328],
       ["", "k", 9328],
@@ -61,12 +86,13 @@ class LeaderboardScreen extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 0.0),
               child: Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Scrollbar(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
                         itemCount: users.length,
                         itemBuilder: (BuildContext context, int index) {
                           int rank = users[index][3];
@@ -107,13 +133,14 @@ class LeaderboardScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  Text("${users[index][2]}"),
+                                  Text("${formatNumber(users[index][2], digitsExponent: 4)}"),
                                   SizedBox(width: 20,),
                                 ],
                               ),
                             ),
                           );
                         }
+                    ),
                     ),
                   ),
                 ],

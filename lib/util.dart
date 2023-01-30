@@ -33,7 +33,7 @@ String formatNumber(int number, {int digits=-1, int firstDigitsExponent=6, int d
     }
   }
   if (divide != 0) {
-    return "${roundDecimal(number / divide, decimals)}$abbreviation";
+    return "${nf.format(roundDecimal(number / divide, decimals))}$abbreviation";
   }
   return nf.format(number);
 }
