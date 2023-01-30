@@ -3,239 +3,124 @@ import 'package:flutter/material.dart';
 // TODO: Create a class named LeaderboardScreen or something.
 
 class LeaderboardScreen extends StatelessWidget {
+  const LeaderboardScreen({Key? key}) : super(key: key);
+
+  List<List<dynamic>> _getUsers() {
+    // TODO: Return an *ordered* list in the format [[badgeID, username, followers, rank]].
+    List<List<dynamic>> users = [
+      ["", "TestUsername", 8932748743],
+      ["", "skdfjlkdsjfldsjfjfldskjfdslk", 839749328],
+      ["", "dfkjlfs", 8397328],
+      ["", "dfsldfsdfsdskj", 9328],
+      ["", "k", 9328],
+      ["", "kskjldfdfskjldfsdfsdfs", 3],
+      ["", "dfskjl", 1],
+    ];
+
+    int rank = 0;
+    for (int i = 0; i < users.length; i++) {
+
+      if (i == 0 || users[i][2] != users[i-1][2]) {
+        rank = i + 1;
+      }
+      users[i].add(rank);
+    }
+
+    return users;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Color.fromARGB(255, 13, 168, 46)),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
+    List<List<dynamic>> users = _getUsers();
 
-        ///appBar: AppBar(
-        ///backgroundColor: Colors.transparent,
-        ///elevation: 0.0,
-        ///leading: Icon(Icons.arrow_back_ios, color:Colors.green),
-        ///actions: [Icon(Icons.grid_view, color: Colors.green,),],
-        ///),
-        body: Column(
-          children: [
-            Container(
-              height: 55,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15), color: Colors.grey),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Name',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: 65,
-                        ),
-                        Text(
-                          'Rank',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: 65,
-                        ),
-                        Text(
-                          'Followers',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14),
-                        ),
-                      ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Column(
+        children: [
+          Container(
+            height: 50,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20.0, left: 40.0, top: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: Text(
+                      "User",
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(),
+                  Text(
+                    "Followers",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ],
               ),
             ),
-            Container(
-              height: 35,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        'You',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 90,
-                      ),
-                      Text(
-                        '1',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 90,
-                      ),
-                      Text(
-                        '10000',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                    ]),
-                  ],
-                ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        itemCount: users.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          int rank = users[index][3];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Container(
+                              decoration: rank > 3 ? null : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5), color: (rank == 1) ? Colors.amberAccent[100] :
+                              (rank == 2) ? Colors.blueGrey[100] :
+                              Colors.brown[200]
+                              ),
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(width: 5,),
+                                  Container(
+                                    child: Text("$rank",
+                                      style: rank > 3 ? Theme.of(context).textTheme.headline6 :
+                                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold,
+                                          color: (rank == 1) ? Colors.amber[900] :
+                                          (rank == 2) ? Colors.blueGrey[500] :
+                                          Colors.brown[600]
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 22,
+                                          backgroundImage: null, // TODO. User users[index][0].
+                                        ),
+                                        SizedBox(width: 7,),
+                                        Text(users[index][1]),
+                                      ],
+                                    ),
+                                  ),
+                                  Text("${users[index][2]}"),
+                                  SizedBox(width: 20,),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              height: 35,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        'Player 1',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        '2',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 90,
-                      ),
-                      Text(
-                        '9865',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 35,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        'Player 2',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        '3',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 90,
-                      ),
-                      Text(
-                        '9122',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 35,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        'Player 3',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 65,
-                      ),
-                      Text(
-                        '4',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                      SizedBox(
-                        width: 90,
-                      ),
-                      Text(
-                        '8613',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -78,7 +78,7 @@ class _ModeNavigationState extends State<ModeNavigation> {
         );
         break;
       case 1: // Leaderboard.
-        screen = LeaderboardScreen();
+        screen = const LeaderboardScreen();
         break;
       case 2: // My Posts.
         // Probably just the normal posts screen but with only the user's posts.
