@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'package:flutter/material.dart';
 
 
 double roundDecimal(double number, num places) {
@@ -36,4 +37,23 @@ String formatNumber(int number, {int digits=-1, int firstDigitsExponent=6, int d
     return "${nf.format(roundDecimal(number / divide, decimals))}$abbreviation";
   }
   return nf.format(number);
+}
+
+
+void popup(BuildContext context, String title, String message, {List<Widget>? actions}) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: actions ?? [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      );
+    }
+  );
 }

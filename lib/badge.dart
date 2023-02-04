@@ -1,72 +1,66 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:yaml/yaml.dart';
 
 
-Map<String, List<String>> badges = {
-  "achievement": [
-    "favorites1",
-    "favorites2",
-    "favorites3",
-    "favorites4",
-    "favorites5",
-    "followers1",
-    "followers2",
-    "followers3",
-    "followers4",
-    "followers5",
-    "time1",
-    "time2",
-    "time3",
-    "time4",
-    "time5",
-  ],
-  "buyable": [
-    "bird",
-    "landscape",
-    "fairy",
-    "flower",
-    "ladybug",
-    "moon",
-  ],
-};
+List<String> badgeIds = [];
 
-Map<String, String> badgeNames = {
-  "favorites1": "10 Favorites",
-  "favorites2": "100 Favorites",
-  "favorites3": "1,000 Favorites",
-  "favorites4": "10,000 Favorites",
-  "favorites5": "100,000 Favorites",
-  "followers1": "1 Follower",
-  "followers2": "10 Followers",
-  "followers3": "100 Followers",
-  "followers4": "1000 Followers",
-  "followers5": "10,000 Followers",
-  "time1": "1 Month User",
-  "time2": "6 Month User",
-  "time3": "1 Year User",
-  "time4": "5 Year User",
-  "time5": "10 Year User",
-};
+Map<String, BadgeInfo> badges = {};
 
+class BadgeInfo {
+  final String id;
+  final String name;
+  final String type;
+  final AssetImage assetImage;
+  final int value;
+  final int cost;
 
-String? getBadgeId(String category, dynamic value) {
-  if (category != "time") {
-    value = log(value) / log(10);
-    if (category == "followers") {
-      value++;
-    }
-  } else { // TODO: If value is a time. Not sure what data type firebase will return.
-
+  BadgeInfo(
+    this.id,
+    this.name,
+    this.type,
+    this.assetImage,
+    {this.value = 0,
+    this.cost = 0}
+  ) {
+    badges[id] = this;
+    badgeIds.add(id);
   }
-  return "$category${value.round()}}";
 }
 
-ImageProvider getBadgeImage(String badgeId) {
-  String badgeType = badges["buyable"]!.contains(badgeId) ? "buyable" : "achievement";
-  if (badgeType == "achievement" && !badges["achievement"]!.contains(badgeId)) {
-    throw Exception("Invalid badge ID: $badgeId");
-  }
 
-  return AssetImage('assets/badges/$badgeType/$badgeId.jpeg');
+Future<void> getBadges() async {
+  final yamlString = await rootBundle.loadString('assets/badges/badges.yaml');
+  final badgeData = loadYaml(yamlString);
+  badgeData.forEach((type, badgeMap) {
+    badgeMap.forEach((badgeId, information) {
+      void createBadge(id, name, {cost = 0, value = 0}) {
+        BadgeInfo(
+          id,
+          name,
+          type,
+          AssetImage('assets/badges/$type/$id.jpeg'),
+          cost: cost,
+          value: value,
+        );
+      }
+      if (type == "buyable") {
+        createBadge(
+            badgeId,
+            badgeId[0].toUpperCase() + badgeId.substring(1),
+            cost: information["cost"]);
+      } else if (type == "achievement") {
+        information.forEach((number, value) {
+          createBadge(
+            "$badgeId$number",
+            (badgeId != "time") ?
+              "$number ${badgeId[0].toUpperCase() + badgeId.substring(1, (number != 1) ? badgeId.length : badgeId.length - 1)}" :
+              "${(number < 12 ? number : (number / 12).round())}-${(number < 12) ? "Month" : "Year"} User",
+            value: value["value"],
+          );
+        });
+      }
+    });
+  });
 }
-

@@ -21,6 +21,7 @@ const List<String> sortBy = <String>["Most recent", "Most liked", "Least liked"]
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await getBadges();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -147,9 +148,9 @@ class _ModeNavigationState extends State<ModeNavigation> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: getBadgeImage("bird"), // TODO: Add badge profile picture.
+                      backgroundImage: badges["bird"]!.assetImage, // TODO: Add badge profile picture.
                     ),
-                    SizedBox(height: 14,),
+                    const SizedBox(height: 14,),
                     Text(
                       "ExampleUsername", // TODO: Change to actual username.
                       style: TextStyle(fontSize: 20, color: Colors.white),

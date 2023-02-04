@@ -1,0 +1,58 @@
+buyable:
+  bird:
+    cost: 100
+  fairy:
+    cost: 100
+  flower:
+    cost: 100
+  ladybug:
+    cost: 100
+  landscape:
+    cost: 100
+  moon:
+    cost: 100
+achievement:
+  favorites:
+    1:
+      value: 10
+    2:
+      value: 100
+    3:
+      value: 1000
+    4:
+      value: 10000
+    5:
+      value: 100000
+  followers:
+    1:
+      value: 1
+    2:
+      value: 10
+    3:
+      value: 100
+    4:
+      value: 1000
+    5:
+      value: 10000
+  likes:
+    1:
+      value: 10
+    2:
+      value: 100
+    3:
+      value: 1000
+    4:
+      value: 10000
+    5:
+      value: 100000
+  time: # Value is in months.
+    1:
+      value: 1
+    2:
+      value: 6
+    3:
+      value: 12
+    4:
+      value: 60
+    5:
+      value: 120
