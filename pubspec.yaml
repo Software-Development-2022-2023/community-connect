@@ -40,6 +40,7 @@ dependencies:
   firebase_database: ^10.0.7
   image_picker: ^0.8.6
   intl: ^0.18.0
+  yaml: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/badges/
     - assets/badges/achievement/
     - assets/badges/buyable/
 

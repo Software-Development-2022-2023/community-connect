@@ -18,12 +18,25 @@ class MarketplaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int baseAchievementSpaces = (badges["achievement"]!.length/3).round();
-    int totalAchievementSpaces = (baseAchievementSpaces / 3).ceil() * 9;
+    int achievementBadgeCount = 0;
+    int buyableBadgeCount = 0;
+    int achievementTypes = 0;
+    badges.forEach((_, badge) {
+      if (badge.type == "achievement") {
+        achievementBadgeCount++;
+        if (badge.id[badge.id.length - 1] == "1") {
+          achievementTypes++;
+        }
+      } else {
+        buyableBadgeCount++;
+      }
+    });
+    int baseAchievementSpaces = (achievementBadgeCount / achievementTypes).round();
+    int totalAchievementSpaces = (baseAchievementSpaces / 3).ceil() * 3 * achievementTypes;
     List<int> achievementIndices = [];
     int achievementIndex = 0;
     for (int i = 0; i < totalAchievementSpaces; i++) {
-      if (i % (totalAchievementSpaces/3) <= baseAchievementSpaces - 1) {
+      if (i % (totalAchievementSpaces / achievementTypes) <= baseAchievementSpaces - 1) {
         achievementIndices.add(achievementIndex);
         achievementIndex++;
       } else {
@@ -50,10 +63,10 @@ class MarketplaceScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               padding: const EdgeInsets.all(5.0),
-              itemCount: badges["buyable"]!.length,
+              itemCount: buyableBadgeCount,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               itemBuilder: (context, index) {
-                String badgeId = badges["buyable"]![index];
+                BadgeInfo badge = badges[badgeIds[index]]!;
                 bool hasBadge = false; // TODO: Check if user has badge already.
 
                 return Padding(
@@ -72,24 +85,25 @@ class MarketplaceScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        if (hasBadge) {
+                        if (hasBadge && 1000 >= 0) { // TODO: Also check if user has enough TreeCoins.
                           return;
                         }
+                        popup(context, "Title", "dfskjlkjldfkjldfkjl");
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           CircleAvatar(
                             radius: 40,
-                            backgroundImage: getBadgeImage(badgeId),
+                            backgroundImage: badge.assetImage,
                           ),
-                          Text(badgeId[0].toUpperCase() + badgeId.substring(1)),
+                          Text(badge.name),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               treeCoinIcon(20),
-                              SizedBox(width: 4,),
-                              const Text("100"),
+                              const SizedBox(width: 4,),
+                              Text(badge.cost.toString()),
                             ],
                           ),
                         ],
@@ -113,8 +127,7 @@ class MarketplaceScreen extends StatelessWidget {
                 if (achievementIndices[index] == -1) {
                   return Container();
                 }
-                String badgeId = badges["achievement"]![achievementIndices[index]];
-                String badgeName = badgeNames[badgeId]!;
+                BadgeInfo badge = badges[badgeIds[achievementIndices[index] + buyableBadgeCount]]!;
 
                 bool hasBadge = false; // TODO: Check if user has badge already.
 
@@ -135,9 +148,9 @@ class MarketplaceScreen extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 40,
-                              backgroundImage: getBadgeImage(badgeId),
+                              backgroundImage: badge.assetImage,
                             ),
-                            Text(badgeName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+                            Text(badge.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
                           ],
                         )
                       ),
