@@ -40,20 +40,32 @@ String formatNumber(int number, {int digits=-1, int firstDigitsExponent=6, int d
 }
 
 
-void popup(BuildContext context, String title, String message, {List<Widget>? actions}) {
+AlertDialog popup(BuildContext context, String title, String message, {String? textAction, List<Widget>? actions}) {
+  /* General usage:
   showDialog(
     context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: actions ?? [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      );
+    builder: (context) => popup(context, "Title", "Message"),
+  ).then((value) {
+    if (value) {
+      // Do something if confirmed.
     }
+  });
+   */
+  return AlertDialog(
+    title: Text(title),
+    content: Text(message),
+    actions: actions ?? [
+      TextButton(
+        onPressed: () => Navigator.pop(context, true),
+        child: Text(textAction ?? "CONFIRM"),
+      ),
+      TextButton(
+        onPressed: () => Navigator.pop(context, false),
+        child: const Text("CANCEL"),
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.red,
+        )
+      ),
+    ],
   );
 }
