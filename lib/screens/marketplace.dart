@@ -13,9 +13,15 @@ Container treeCoinIcon(double size) => Container(
   child: Icon(Icons.park, size: size * .75, color: Colors.greenAccent[700]!,),
 );
 
-class MarketplaceScreen extends StatelessWidget {
+
+class MarketplaceScreen extends StatefulWidget {
   const MarketplaceScreen({Key? key}) : super(key: key);
 
+  @override
+  State<MarketplaceScreen> createState() => _MarketplaceScreenState();
+}
+
+class _MarketplaceScreenState extends State<MarketplaceScreen> {
   @override
   Widget build(BuildContext context) {
     int achievementBadgeCount = 0;
@@ -85,10 +91,19 @@ class MarketplaceScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        if (hasBadge && 1000 >= 0) { // TODO: Also check if user has enough TreeCoins.
+                        if (hasBadge || 1000 < badge.cost) { // TODO: Also check if user has enough TreeCoins.
                           return;
                         }
-                        popup(context, "Title", "dfskjlkjldfkjldfkjl");
+                        showDialog(
+                          context: context,
+                          builder: (context) => popup(context, badge.name, "Buy this badge for ${badge.cost} TreeCoins?")
+                          ).then((value) {
+                          if (value) {
+                            print("Buy badge.");
+                            // TODO: Buy badge.
+                            setState(() {});
+                          }
+                        });
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -14,9 +12,9 @@ import 'package:community_connect/badge.dart';
 import 'package:community_connect/screens/leaderboard.dart';
 import 'package:community_connect/screens/marketplace.dart';
 import 'package:community_connect/screens/profile.dart';
+import 'package:community_connect/screens/picturemode.dart';
 
 
-const List<String> subjectList = <String>["Recycling", "Solar Power", "Planting trees", "Renewables", "Picking up trash"];
 const List<String> sortBy = <String>["Most recent", "Most liked", "Least liked"];
 
 void main() async {
@@ -202,6 +200,12 @@ class _ModeNavigationState extends State<ModeNavigation> {
       appBar: AppBar(
         title: const Text("Community Connect"),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            _pictureMode = false;
+            _selectDrawerIndex(-1, false);
+          },
+          icon: const Icon(Icons.home)),
       ),
       body: PictureModeScreen(returnSurfing: _onModeTapped,),
       floatingActionButton: switchModeButton,
@@ -368,59 +372,4 @@ class PostDisplay extends StatelessWidget {
   }
 }
 
-class PictureModeScreen extends StatefulWidget {
-  PictureModeScreen({Key? key, required this.returnSurfing}) : super(key: key);
-
-  Function returnSurfing;
-
-  @override
-  State<PictureModeScreen> createState() => _PictureModeScreenState();
-}
-
-class _PictureModeScreenState extends State<PictureModeScreen> {
-
-  File? imageFile;
-
-  void _getFromCamera() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxHeight: 1080,
-      maxWidth: 1080,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      });
-    } else {
-      widget.returnSurfing();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (imageFile == null) {
-      _getFromCamera();
-    }
-    return ListView(
-      children: [
-        const SizedBox(height: 50,),
-        imageFile != null ?
-          Image.file(imageFile!) :
-          const Icon(Icons.camera_enhance_rounded),
-        Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: ElevatedButton(
-            child: const Text(
-              "Post.", // TODO: Probably make this look nicer.
-              style: TextStyle(fontSize: 20),
-            ),
-            onPressed: () {
-              print(imageFile); // TODO: Post image.
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
 
