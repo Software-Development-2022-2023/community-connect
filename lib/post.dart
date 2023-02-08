@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
+
+const List<String> subjectList = <String>["Recycling", "Solar Power", "Planting trees", "Renewables", "Picking up trash"];
+
 
 class Post extends StatefulWidget {
   final String badge;
