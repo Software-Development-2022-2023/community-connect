@@ -52,12 +52,13 @@ Future<void> getBadges() async {
             cost: information["cost"]);
       } else if (type == "achievement") {
         information.forEach((number, value) {
+          value = value["value"];
           createBadge(
             "$badgeId$number",
             (badgeId != "time") ?
               "$number ${badgeId[0].toUpperCase() + badgeId.substring(1, (number != 1) ? badgeId.length : badgeId.length - 1)}" :
-              "${(number < 12 ? number : (number / 12).round())}-${(number < 12) ? "Month" : "Year"} User",
-            value: value["value"],
+              "${(value < 12 ? value : (value / 12).round())}-${(value < 12) ? "Month" : "Year"} User",
+            value: value,
           );
         });
       }
