@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:community_connect/post.dart';
 
+import '../data.dart';
+
 
 class PictureModeScreen extends StatefulWidget {
   PictureModeScreen({Key? key, required this.returnSurfing}) : super(key: key);
@@ -84,9 +86,7 @@ class _PictureModeScreenState extends State<PictureModeScreen> {
               ),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  print(subjectDropdown.selectedItems);
-                  print(_descriptionController.text);
-                  // TODO: Post image [Image.file(imageFile!)] with description [_descriptionController.text] and subjects [subjectDropdown.selectedItems].
+                  Data.uploadPost("jafdadfa", _descriptionController.text, imageFile!, subjectDropdown.selectedItems);
                   widget.returnSurfing();
                 }
               },

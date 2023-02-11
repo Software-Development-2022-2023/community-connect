@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'data.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -15,7 +16,7 @@ import 'package:community_connect/screens/profile.dart';
 import 'package:community_connect/screens/picturemode.dart';
 
 
-const List<String> sortBy = <String>["Most recent", "Most liked", "Least liked"];
+const List<String> sortBy = <String>["Most recent", "Oldest", "Most liked", "Least liked"];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,8 @@ class ModeNavigation extends StatefulWidget {
 class _ModeNavigationState extends State<ModeNavigation> {
   bool _pictureMode = false;
   int _selectedDrawerIndex = -1;
+  String sort = sortBy.first;
+  List<String> subjectChoices = List<String>.empty();
 
   void _onModeTapped() {
     setState(() {
@@ -116,6 +119,16 @@ class _ModeNavigationState extends State<ModeNavigation> {
               icon: const Icon(Icons.home))
           ),
           floatingActionButton: switchModeButton,
+        drawer: PostFilter(
+          onApply: (String sortVal, List<String> subjects) {
+            setState(() {
+              sort = sortVal;
+              subjectChoices = subjects;
+            });
+          },
+          sortVal: sort,
+          subjectChoices: subjectChoices,
+        ),
         body: (screen != null) ? screen : Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -131,11 +144,13 @@ class _ModeNavigationState extends State<ModeNavigation> {
                 child: Text("Add filters..."),
                 onPressed: () => _key.currentState!.openDrawer(),
               ),
-              PostDisplay(),
+              PostDisplay(
+                sortVal: sort,
+                subjects: subjectChoices,
+              ),
             ],
           ),
         ),
-        drawer: PostFilter(),
         endDrawer: Drawer(
           child: ListView(
             children: [
@@ -214,18 +229,22 @@ class _ModeNavigationState extends State<ModeNavigation> {
 }
 
 class PostFilter extends StatefulWidget {
-  const PostFilter({super.key});
+  Function onApply;
+  String? sortVal;
+  List<String>? subjectChoices;
+
+  PostFilter({super.key, required this.onApply, required this.sortVal, required this.subjectChoices});
 
   @override
   State<PostFilter> createState() => _PostFilterState();
 }
 
 class _PostFilterState extends State<PostFilter> {
-  String sortVal = sortBy.first;
-  List<String> subjectChoices = [];
-
   @override
   Widget build(BuildContext context) {
+    widget.sortVal ??= sortBy.first;
+    widget.subjectChoices ??= List<String>.empty();
+
     return Drawer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -240,11 +259,11 @@ class _PostFilterState extends State<PostFilter> {
             children: List<Widget>.generate(sortBy.length, (int i) {
               return ChoiceChip(
                 label: Text(sortBy[i], style: Theme.of(context).textTheme.bodyLarge),
-                selected: sortBy[i] == sortVal,
+                selected: sortBy[i] == widget.sortVal,
                 selectedColor: Theme.of(context).colorScheme.primary,
                 onSelected: (bool selected) {
                   setState(() {
-                    sortVal = sortBy[i];
+                    widget.sortVal = sortBy[i];
                   });
                 },
               );
@@ -262,14 +281,14 @@ class _PostFilterState extends State<PostFilter> {
                 children: List<Widget>.generate(subjectList.length, (int i) {
                   return FilterChip(
                     label: Text(subjectList[i]),
-                    selected: subjectChoices.contains(subjectList[i]),
+                    selected: widget.subjectChoices!.contains(subjectList[i]),
                     selectedColor: Theme.of(context).colorScheme.primary,
                     onSelected: (bool selected) {
                       setState(() {
-                        if (selected && !subjectChoices.contains(subjectList[i])) {
-                          subjectChoices.add(subjectList[i]);
+                        if (selected && !widget.subjectChoices!.contains(subjectList[i])) {
+                          widget.subjectChoices!.add(subjectList[i]);
                         } else if (!selected) {
-                          subjectChoices.remove(subjectList[i]);
+                          widget.subjectChoices!.remove(subjectList[i]);
                         }
                       });
                     },
@@ -289,6 +308,7 @@ class _PostFilterState extends State<PostFilter> {
               Navigator.pop(context);
 
               // TODO: Update Search Results
+              widget.onApply(widget.sortVal, widget.subjectChoices);
             }
           )
         ],
@@ -298,76 +318,32 @@ class _PostFilterState extends State<PostFilter> {
 }
 
 class PostDisplay extends StatelessWidget {
-  const PostDisplay({Key? key}) : super(key: key);
+  String? sortVal;
+  List<String>? subjects;
+  PostDisplay({Key? key, required this.sortVal, required this.subjects}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Post> posts = [
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-      Post(
-        badge: "",
-        username: "sejafh",
-        time: 234234,
-        imageUrl: "https://images.wagwalkingweb.com/media/training_guides/cover-his-nose/hero/How-to-Train-Your-Dog-to-Cover-His-Nose.jpg",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod",
-        likeInfo: LikeInfo(500, true),
-        filters: ["recycling", "solar power", "Renewables", "Planting trees"],
-      ),
-    ];
+    sortVal ??= sortBy.first;
+    subjects ??= List<String>.empty();
 
-    return Expanded(
-      child: ListView.separated(
-        padding: EdgeInsets.all(5.0),
-        itemCount: posts.length,
-        separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.0, height: 30.0),
-        itemBuilder: (context, index) {
-          return posts[index];
-        }
-      )
+    return FutureBuilder(
+        future: Data.getPosts(sortBy: sortVal!, subjects: subjects!),
+        builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+          return Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(5.0),
+              itemCount: snapshot.data!.length,
+              separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.0, height: 30.0),
+              itemBuilder: (context, index) {
+                return snapshot.data![index];
+              }
+            )
+          );
+      }
     );
   }
 }
