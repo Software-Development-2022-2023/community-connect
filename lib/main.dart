@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'data.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:community_connect/data.dart';
 
 import 'package:community_connect/post.dart';
 import 'package:community_connect/badge.dart';

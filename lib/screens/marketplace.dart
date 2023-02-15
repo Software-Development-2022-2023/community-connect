@@ -97,7 +97,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => popup(context, badge.name, "Buy this badge for ${badge.cost} TreeCoins?")
-                          ).then((value) {
+                        ).then((value) {
                           if (value) {
                             print("Buy badge.");
                             // TODO: Buy badge.

@@ -122,6 +122,13 @@ class _MultiselectDropDownState extends State<MultiselectDropDown> {
         margin: const EdgeInsets.only(top: 10.0),
         decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
         child: ExpansionTile(
+          onExpansionChanged: (value) {
+            if (value) {
+              Future.delayed(const Duration(milliseconds: 220), () {
+                Scrollable.ensureVisible(context, duration: const Duration(milliseconds: 150));
+              });
+            }
+          },
           // iconColor:
           title: Text(
             widget.selectedItems.isEmpty ? "Select" : widget.selectedItems.join(", "),
