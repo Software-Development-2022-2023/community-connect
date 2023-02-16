@@ -1,36 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:community_connect/util.dart';
 
+import 'package:community_connect/badge.dart';
+import 'package:community_connect/util.dart';
+
 
 class BadgeIcon extends StatelessWidget {
-  const BadgeIcon({Key? key, required this.id}) : super(key: key);
+  BadgeIcon({Key? key, required this.id, this.selected = false}) : super(key: key);
 
   final String id;
+  bool selected;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(2.9),
+    return Container(
+      padding: const EdgeInsets.all(2.9),
+      decoration: BoxDecoration(
+        color: selected ? Colors.greenAccent : Colors.transparent,
+        borderRadius: BorderRadius.circular(50.0),
+      ),
       child: CircleAvatar(
-        radius: 25,
-        backgroundImage: null, // TODO: Use this.id to get badge image.
+        radius: 30,
+        backgroundImage: badges[id]!.assetImage,
       ),
     );
   }
 }
 
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key,
-    required this.username,
-  }) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key, required this.username}) : super(key: key);
 
   final String username;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  List<String> ownedBadges = [];
+  String activeBadge = "";
 
   @override
   Widget build(BuildContext context) {
     int followers = 2313434, following = 9223; // TODO: Get this from database with username.
     int posts = 98327, likes = 13233932838829;
+
+    if (ownedBadges.isEmpty) {
+      ownedBadges = ["bird", "landscape", "favorites1", "likes1"]; // TODO: Get badge IDs the user owns.
+      activeBadge = "bird"; // TODO: Get the index of the badge the user current has equipped.
+    }
+    List<GestureDetector> badgeIcons = ownedBadges.map((e) =>
+      GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => popup(context, "Change Profile Picture", "Equip \"${badges[e]!.name}\" badge as your profile picture?"),
+          ).then((value) {
+            if (value) {
+              // TODO: Update database with currently equipped badge ID (e).
+              setState(() {
+                activeBadge = e;
+              });
+            }
+          });
+        },
+        child: BadgeIcon(id: e, selected: e == activeBadge,)
+      ),
+    ).toList();
     
     return Column(
       children: [
@@ -38,9 +74,9 @@ class ProfileScreen extends StatelessWidget {
           padding: const EdgeInsets.all(30.0),
           child: Row(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
-                backgroundImage: null, // TODO: Get image from database with username.
+                backgroundImage: badges[activeBadge]!.assetImage,
               ),
               const SizedBox(width: 15,),
               Expanded(
@@ -49,7 +85,7 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(username,
+                      Text(widget.username,
                         style: const TextStyle(fontSize: 25),),
                       const SizedBox(),
                       Row(
@@ -83,8 +119,8 @@ class ProfileScreen extends StatelessWidget {
           alignment: AlignmentDirectional.topStart,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Wrap( // TODO: Fill with actual badges.
-              children: [BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""), BadgeIcon(id: ""),],
+            child: Wrap(
+              children: badgeIcons,
             ),
           ),
         ),
