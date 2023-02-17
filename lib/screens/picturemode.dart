@@ -42,7 +42,7 @@ class _PictureModeScreenState extends State<PictureModeScreen> {
     if (imageFile == null) {
       _getFromCamera();
     }
-    MultiselectDropDown subjectDropdown = MultiselectDropDown(optionsList: subjectList, title: "Select Subjects.");
+    MultiselectDropDown subjectDropdown = MultiselectDropDown(optionsList: subjectList, title: "Select Tags.");
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: ListView(
