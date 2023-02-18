@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:community_connect/post.dart';
 
 import '../data.dart';
+import '../util.dart';
 
 
 class PictureModeScreen extends StatefulWidget {
@@ -86,8 +87,12 @@ class _PictureModeScreenState extends State<PictureModeScreen> {
               ),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  Data.uploadPost("jafdadfa", _descriptionController.text, imageFile!, subjectDropdown.selectedItems);
-                  widget.returnSurfing();
+                  Future.delayed(Duration.zero, () async
+                  {
+                    Data.uploadPost('', _descriptionController.text, imageFile!, subjectDropdown.selectedItems).then((_) {
+                      widget.returnSurfing();
+                    });
+                  });
                 }
               },
             ),

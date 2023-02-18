@@ -1,7 +1,12 @@
 import 'package:intl/intl.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:yaml/yaml.dart';
+import 'package:yaml_writer/yaml_writer.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
+import 'data.dart';
 
 double roundDecimal(double number, num places) {
   places = pow(10, places);
@@ -68,4 +73,39 @@ AlertDialog popup(BuildContext context, String title, String message, {String? t
       ),
     ],
   );
+}
+
+Future<String?> getUsername() async {
+  final dir = await getApplicationDocumentsDirectory();
+  String path = '${dir.path}/userdata.yaml';
+  final f = File(path);
+  if (!(await f.exists())) { return null; }
+  final yamlString = await f.readAsString();
+  final yaml = loadYaml(yamlString);
+  if (yaml == null || !yaml.containsKey('username') || yaml['username'] == '') {
+    return null;
+  }
+
+  final data = await Data.getUserData(yaml['username']);
+  if (data.isEmpty) {
+    f.writeAsString("");
+
+    return null;
+  }
+
+  return yaml['username'];
+}
+
+Future<void> setUsername(String username) async {
+  var yamlWriter = YAMLWriter();
+  print("runnin");
+
+  String yamlString = yamlWriter.write({
+    'username': username,
+  });
+
+  final dir = await getApplicationDocumentsDirectory();
+  String path = '${dir.path}/userdata.yaml';
+  final f = File(path);
+  await f.writeAsString(yamlString);
 }

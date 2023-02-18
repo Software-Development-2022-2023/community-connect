@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'badge.dart';
+import 'data.dart';
+
 
 const List<String> subjectList = <String>["Recycling", "Solar Power", "Planting trees", "Renewables", "Picking up trash"];
 
@@ -11,6 +14,7 @@ class Post extends StatefulWidget {
   final String caption;
   final List<String> filters;
   final LikeInfo likeInfo;
+  final String postId;
 
   const Post({Key? key,
     required this.badge,
@@ -20,6 +24,7 @@ class Post extends StatefulWidget {
     required this.caption,
     required this.filters,
     required this.likeInfo,
+    required this.postId,
   }) : super(key: key);
 
   @override
@@ -54,15 +59,35 @@ class _PostState extends State<Post> {
     );
   }
 
+  String formatTime(var postTime) {
+    num duration = (DateTime.now().millisecondsSinceEpoch / 1000).floor() - postTime;
+    if (duration < 60) {
+      // 60 seconds
+      return "$duration seconds ago";
+    } else if (duration < 60 * 60) {
+      // 1 hour
+      return "${(duration/60).floor()} minutes ago";
+    } else if (duration < 60 * 60 * 24) {
+      // 1 day
+      return "${(duration/60/60).floor()} hours ago";
+    } else if (duration < 60 * 60 * 24 * 7) {
+      // 1 week
+      return "${(duration/60/60/24).floor()} days ago";
+    } else {
+      // Return day
+      return "${DateTime.fromMillisecondsSinceEpoch(postTime * 1000)}";
+    }
+  }
+
   Widget postLeft(BuildContext context) {
     return Column(
       children: [
         Container(
             margin: const EdgeInsets.all(8.0),
             child: CircleAvatar(
+              foregroundImage: badges.containsKey(widget.badge) ? badges[widget.badge]!.assetImage : null,
               radius: 25.0,
               backgroundColor: Theme.of(context).colorScheme.primary,
-              // TODO: Load badge based off of id given
             )
         ),
         IconButton(
@@ -71,14 +96,18 @@ class _PostState extends State<Post> {
           onPressed: () {
             setState(() {
               widget.likeInfo.isLiked = !widget.likeInfo.isLiked;
-              // TODO: Save like status to database
+              if (widget.likeInfo.isLiked) {
+                Data.likePost(widget.postId, widget.username);
+              } else {
+                Data.unlikePost(widget.postId, widget.username);
+              }
             });
           },
         ),
         Text(
           widget.likeInfo.likes.toString(),
         ),
-        IconButton(
+        /*IconButton(
           icon: Icon(
             Icons.share_rounded,
             color: Theme.of(context).colorScheme.primary,
@@ -86,7 +115,7 @@ class _PostState extends State<Post> {
           onPressed: () {
             // TODO: Share with others
           },
-        )
+        )*/
       ],
     );
   }
@@ -104,8 +133,7 @@ class _PostState extends State<Post> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Text(
-                // TODO: Display time since last post if made < 1 day ago, else display time/date
-                widget.time.toString(),
+                formatTime(widget.time),
                 style: Theme.of(context).textTheme.subtitle1,
               )
             ],

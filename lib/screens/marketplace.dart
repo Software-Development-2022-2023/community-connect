@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:community_connect/badge.dart';
 import 'package:community_connect/util.dart';
 
+import '../data.dart';
+
 
 Container treeCoinIcon(double size) => Container(
   width: size,
@@ -52,128 +54,164 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
 
     return Scrollbar(
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: FutureBuilder<Map<String, dynamic>>(
+          future: Data.getUserData(''),
+          builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if (!snapshot.hasData) {
+              return const CircularProgressIndicator();
+            } else {
+              return Column(
                 children: [
-                  treeCoinIcon(30),
-                  const SizedBox(width: 10,),
-                  Text(formatNumber(187823723822332, firstDigitsExponent: 15, digitsExponent: 4), style: TextStyle(fontSize: 30),), // TODO: Get TreeCoin amount from database.
-                ],
-              ),
-            ),
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(5.0),
-              itemCount: buyableBadgeCount,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemBuilder: (context, index) {
-                BadgeInfo badge = badges[badgeIds[index]]!;
-                bool hasBadge = false; // TODO: Check if user has badge already.
-
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    foregroundDecoration: hasBadge ? BoxDecoration(
-                      color: Colors.black.withOpacity(.6),
-                      borderRadius: BorderRadius.circular(10),
-                    ) : null,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.greenAccent[100],
-                        foregroundColor: Colors.black,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (hasBadge || 1000 < badge.cost) { // TODO: Also check if user has enough TreeCoins.
-                          return;
-                        }
-                        showDialog(
-                          context: context,
-                          builder: (context) => popup(context, badge.name, "Buy this badge for ${badge.cost} TreeCoins?")
-                        ).then((value) {
-                          if (value) {
-                            print("Buy badge.");
-                            // TODO: Buy badge.
-                            setState(() {});
-                          }
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundImage: badge.assetImage,
-                          ),
-                          Text(badge.name),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              treeCoinIcon(20),
-                              const SizedBox(width: 4,),
-                              Text(badge.cost.toString()),
-                            ],
-                          ),
-                        ],
-                      )
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        treeCoinIcon(30),
+                        const SizedBox(width: 10,),
+                        Text(
+                          formatNumber(snapshot.data!['treecoins'], firstDigitsExponent: 15,
+                              digitsExponent: 4), style: TextStyle(
+                            fontSize: 30),),
+                      ],
                     ),
-                  )
-                );
-              }
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 5),
-              child: Text("Achievement Badges", style: TextStyle(fontSize: 25),),
-            ),
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(5.0),
-              itemCount: totalAchievementSpaces,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemBuilder: (context, index) {
-                if (achievementIndices[index] == -1) {
-                  return Container();
-                }
-                BadgeInfo badge = badges[badgeIds[achievementIndices[index] + buyableBadgeCount]]!;
+                  ),
+                  GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(5.0),
+                      itemCount: buyableBadgeCount,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3),
+                      itemBuilder: (context, index) {
+                        BadgeInfo badge = badges[badgeIds[index]]!;
+                        bool hasBadge = snapshot.data!['badges'].contains(badge.id);
+                        print(snapshot.data!['badges'].contains(badge.id));
 
-                bool hasBadge = false; // TODO: Check if user has badge already.
+                        return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              foregroundDecoration: !hasBadge ? BoxDecoration(
+                                color: Colors.black.withOpacity(.6),
+                                borderRadius: BorderRadius.circular(10),
+                              ) : null,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.greenAccent[100],
+                                    foregroundColor: Colors.black,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                              10)),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (hasBadge || snapshot.data!['treecoins'] < badge
+                                        .cost) {
+                                      return;
+                                    }
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            popup(context, badge.name,
+                                                "Buy this badge for ${badge
+                                                    .cost} TreeCoins?")
+                                    ).then((value) {
+                                      if (value) {
+                                        // Confirmed, try to buy badge
+                                        Data.buyBadge(badge).then((succ) {
+                                          if (!succ) {
+                                            return;
+                                          } else {
+                                            setState(() {
 
-                return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      foregroundDecoration: hasBadge ? BoxDecoration(
-                        color: Colors.black.withOpacity(.6),
-                        borderRadius: BorderRadius.circular(10),
-                      ) : null,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: badge.assetImage,
-                            ),
-                            Text(badge.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
-                          ],
-                        )
-                      ),
-                    )
-                );
-              }
-            ),
-          ],
+                                            });
+                                          }
+                                        });
+                                      }
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceEvenly,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: badge.assetImage,
+                                      ),
+                                      Text(badge.name),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center,
+                                        children: [
+                                          treeCoinIcon(20),
+                                          const SizedBox(width: 4,),
+                                          Text(badge.cost.toString()),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            )
+                        );
+                      }
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 5),
+                    child: Text(
+                      "Achievement Badges", style: TextStyle(fontSize: 25),),
+                  ),
+                  GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(5.0),
+                      itemCount: totalAchievementSpaces,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3),
+                      itemBuilder: (context, index) {
+                        if (achievementIndices[index] == -1) {
+                          return Container();
+                        }
+                        BadgeInfo badge = badges[badgeIds[achievementIndices[index] +
+                            buyableBadgeCount]]!;
+
+                        bool hasBadge = snapshot.data!['badges'].contains(badge.id);
+
+                        return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              foregroundDecoration: !hasBadge ? BoxDecoration(
+                                color: Colors.black.withOpacity(.6),
+                                borderRadius: BorderRadius.circular(10),
+                              ) : null,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[100],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceEvenly,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: badge.assetImage,
+                                      ),
+                                      Text(badge.name,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight
+                                                .bold, fontSize: 14),),
+                                    ],
+                                  )
+                              ),
+                            )
+                        );
+                      }
+                  ),
+                ],
+              );
+            }
+          }
         ),
       ),
     );
